@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Role Permission - TailAdmin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .role-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.2s;
+    }
+    
+    .role-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .role-card h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .role-card h3 i {
+        color: #3B82F6;
+    }
+    
+    .role-card p {
+        font-size: 13px;
+        color: #6B7280;
+        margin-bottom: 16px;
+    }
+    
+    .role-card .btn {
+        margin-top: 8px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 48px 24px;
+    }
+    
+    .empty-state i {
+        font-size: 48px;
+        color: #D1D5DB;
+        margin-bottom: 16px;
+    }
+    
+    .empty-state h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+    }
+    
+    .empty-state p {
+        font-size: 14px;
+        color: #6B7280;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-shield-alt"></i> Role Permissions</h1>
+    <p>Manage permissions for each role</p>
+</div>
+
+<!-- Role Cards -->
+{% if roles %}
+<div class="row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+    {% for role in roles %}
+    <div class="role-card">
+        <h3><i class="fas fa-user-shield"></i> {{ role.role_name }}</h3>
+        <p>{{ role.role_description|default:"No description" }}</p>
+        <a href="{% url 'role_permission_edit' role.id %}" class="btn btn-primary">
+            <i class="fas fa-cog"></i> Manage Permissions
+        </a>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="content-card">
+    <div class="empty-state">
+        <i class="fas fa-user-shield"></i>
+        <h3>No Roles Found</h3>
+        <p>You need to create roles first before managing permissions.</p>
+        <a href="{% url 'role_add' %}" class="btn btn-primary" style="margin-top: 16px;">
+            <i class="fas fa-plus"></i> Add Role
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Info Section -->
+<div class="content-card" style="margin-top: 24px;">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-info-circle"></i> Permission Types
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+            <div class="info-item" style="text-align: center; padding: 16px;">
+                <i class="fas fa-eye" style="font-size: 24px; color: #3B82F6; margin-bottom: 8px;"></i>
+                <h4 style="font-size: 13px; font-weight: 600; color: #1F2937;">View</h4>
+                <p style="font-size: 11px; color: #6B7280;">Can view the page content</p>
+            </div>
+            <div class="info-item" style="text-align: center; padding: 16px;">
+                <i class="fas fa-plus-circle" style="font-size: 24px; color: #10B981; margin-bottom: 8px;"></i>
+                <h4 style="font-size: 13px; font-weight: 600; color: #1F2937;">Add</h4>
+                <p style="font-size: 11px; color: #6B7280;">Can add new records</p>
+            </div>
+            <div class="info-item" style="text-align: center; padding: 16px;">
+                <i class="fas fa-edit" style="font-size: 24px; color: #F59E0B; margin-bottom: 8px;"></i>
+                <h4 style="font-size: 13px; font-weight: 600; color: #1F2937;">Edit</h4>
+                <p style="font-size: 11px; color: #6B7280;">Can modify existing records</p>
+            </div>
+            <div class="info-item" style="text-align: center; padding: 16px;">
+                <i class="fas fa-trash" style="font-size: 24px; color: #EF4444; margin-bottom: 8px;"></i>
+                <h4 style="font-size: 13px; font-weight: 600; color: #1F2937;">Delete</h4>
+                <p style="font-size: 11px; color: #6B7280;">Can delete records</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

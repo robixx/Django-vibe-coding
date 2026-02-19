@@ -34,3 +34,46 @@ class User(models.Model):
     class Meta:
         managed = False
         db_table = 'User'
+
+
+class Role(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)
+    role_name = models.CharField(db_column='RoleName', max_length=100, blank=True, null=True)
+    role_description = models.TextField(db_column='RoleDescription', blank=True, null=True)
+    is_active = models.IntegerField(db_column='IsActive', default=1)
+    created_at = models.DateTimeField(db_column='CreatedAt', auto_now_add=True, blank=True, null=True)
+    updated_at = models.DateTimeField(db_column='UpdatedAt', auto_now=True, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'Role'
+
+
+class Page(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)
+    page_name = models.CharField(db_column='PageName', max_length=100, blank=True, null=True)
+    page_url = models.CharField(db_column='PageURL', max_length=200, blank=True, null=True)
+    page_icon = models.CharField(db_column='PageIcon', max_length=50, blank=True, null=True)
+    is_active = models.IntegerField(db_column='IsActive', default=1)
+    created_at = models.DateTimeField(db_column='CreatedAt', auto_now_add=True, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'Page'
+
+
+class RolePermission(models.Model):
+    id = models.AutoField(db_column='Id', primary_key=True)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, db_column='RoleId', related_name='permissions')
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, db_column='PageId', related_name='role_permissions')
+    can_view = models.IntegerField(db_column='CanView', default=0)
+    can_add = models.IntegerField(db_column='CanAdd', default=0)
+    can_edit = models.IntegerField(db_column='CanEdit', default=0)
+    can_delete = models.IntegerField(db_column='CanDelete', default=0)
+    is_active = models.IntegerField(db_column='IsActive', default=1)
+    created_at = models.DateTimeField(db_column='CreatedAt', auto_now_add=True, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'RolePermission'
+        unique_together = ('role', 'page')

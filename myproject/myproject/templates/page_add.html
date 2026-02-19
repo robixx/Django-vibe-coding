@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Add Page - TailAdmin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 8px;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        font-size: 13px;
+        color: #1F2937;
+        transition: all 0.2s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .icon-hint {
+        font-size: 11px;
+        color: #6B7280;
+        margin-top: 4px;
+    }
+    
+    .icon-preview {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background: #F3F4F6;
+        border-radius: 6px;
+        margin-left: 10px;
+        font-size: 18px;
+        color: #3B82F6;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-file-alt"></i> Add New Page</h1>
+    <p>Create a new application page</p>
+</div>
+
+<!-- Add Page Form -->
+<div class="content-card">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-plus-circle"></i> Page Information
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <form method="POST" action="{% url 'page_add' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="page_name">Page Name *</label>
+                <input type="text" id="page_name" name="page_name" class="form-control" placeholder="Enter page name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="page_url">Page URL *</label>
+                <input type="text" id="page_url" name="page_url" class="form-control" placeholder="e.g., /settings/role/" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="page_icon">Icon Class</label>
+                <div style="display: flex; align-items: center;">
+                    <input type="text" id="page_icon" name="page_icon" class="form-control" placeholder="e.g., fa-user-shield" style="flex: 1;">
+                    <span class="icon-preview"><i class="fas fa-file"></i></span>
+                </div>
+                <p class="icon-hint">Use Font Awesome icon class (e.g., fa-user, fa-cog, fa-shield-alt)</p>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Page
+                </button>
+                <a href="{% url 'page' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    document.getElementById('page_icon').addEventListener('input', function(e) {
+        var iconClass = e.target.value || 'fa-file';
+        var iconPreview = document.querySelector('.icon-preview i');
+        iconPreview.className = 'fas ' + iconClass;
+    });
+</script>
+{% endblock %}

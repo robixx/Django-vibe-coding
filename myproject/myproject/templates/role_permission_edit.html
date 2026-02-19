@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load custom_tags %}
+
+{% block title %}Edit Role Permissions - TailAdmin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .permission-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .permission-table th {
+        background: #F9FAFB;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #6B7280;
+        padding: 14px 16px;
+        text-align: left;
+        border-bottom: 2px solid #E5E7EB;
+    }
+    
+    .permission-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #E5E7EB;
+        font-size: 13px;
+        color: #1F2937;
+    }
+    
+    .permission-table tbody tr:hover {
+        background: #F9FAFB;
+    }
+    
+    .checkbox-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .checkbox-wrapper input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        accent-color: #3B82F6;
+    }
+    
+    .page-name {
+        font-weight: 600;
+    }
+    
+    .page-icon {
+        margin-right: 10px;
+        color: #3B82F6;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-shield-alt"></i> Edit Permissions - {{ role.role_name }}</h1>
+    <p>Manage page access permissions for this role</p>
+</div>
+
+<!-- Permission Form -->
+<div class="content-card">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-cog"></i> Page Permissions
+        </div>
+    </div>
+    
+    <div class="card-body">
+        {% if pages %}
+        <form method="POST" action="{% url 'role_permission_edit' role.id %}">
+            {% csrf_token %}
+            
+            <table class="permission-table">
+                <thead>
+                    <tr>
+                        <th>Page</th>
+                        <th style="text-align: center;">View</th>
+                        <th style="text-align: center;">Add</th>
+                        <th style="text-align: center;">Edit</th>
+                        <th style="text-align: center;">Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for page in pages %}
+                    <tr>
+                        <td>
+                            <span class="page-icon"><i class="fas {{ page.page_icon|default:'fa-file' }}"></i></span>
+                            <span class="page-name">{{ page.page_name }}</span>
+                        </td>
+                        <td>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" name="can_view_{{ page.id }}" {% if permissions|dict_key:page.id %}{% if permissions|dict_key:page.id.can_view %}checked{% endif %}{% endif %}>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" name="can_add_{{ page.id }}" {% if permissions|dict_key:page.id %}{% if permissions|dict_key:page.id.can_add %}checked{% endif %}{% endif %}>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" name="can_edit_{{ page.id }}" {% if permissions|dict_key:page.id %}{% if permissions|dict_key:page.id.can_edit %}checked{% endif %}{% endif %}>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" name="can_delete_{{ page.id }}" {% if permissions|dict_key:page.id %}{% if permissions|dict_key:page.id.can_delete %}checked{% endif %}{% endif %}>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Permissions
+                </button>
+                <a href="{% url 'role_permission' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-file-alt"></i>
+            <h3>No Pages Found</h3>
+            <p>You need to add pages first before managing permissions.</p>
+            <a href="{% url 'page_add' %}" class="btn btn-primary" style="margin-top: 16px;">
+                <i class="fas fa-plus"></i> Add Page
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Template filter for dict access
+    // This is handled in Django template
+</script>
+{% endblock %}

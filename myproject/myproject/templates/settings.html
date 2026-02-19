@@ -76,8 +76,66 @@
         color: #DC2626;
     }
     
+    /* Submenu Cards */
+    .submenu-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 20px;
+        transition: all 0.2s;
+        text-decoration: none;
+        display: block;
+    }
+    
+    .submenu-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+    }
+    
+    .submenu-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .submenu-card-icon.blue {
+        background: #DBEAFE;
+        color: #2563EB;
+    }
+    
+    .submenu-card-icon.green {
+        background: #D1FAE5;
+        color: #059669;
+    }
+    
+    .submenu-card-icon.purple {
+        background: #EDE9FE;
+        color: #7C3AED;
+    }
+    
+    .submenu-card h4 {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 4px;
+    }
+    
+    .submenu-card p {
+        font-size: 12px;
+        color: #6B7280;
+    }
+    
     @media (max-width: 768px) {
         .settings-grid {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .submenu-grid {
             grid-template-columns: 1fr !important;
         }
     }
@@ -89,6 +147,36 @@
 <div class="page-header">
     <h1><i class="fas fa-cog"></i> Settings</h1>
     <p>Manage your application settings and preferences</p>
+</div>
+
+<!-- Submenu Section -->
+<div class="mb-6">
+    <h2 style="font-size: 14px; font-weight: 600; color: #6B7280; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Settings Menu</h2>
+    <div class="submenu-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+        <a href="{% url 'role' %}" class="submenu-card">
+            <div class="submenu-card-icon blue">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <h4>Role</h4>
+            <p>Manage user roles</p>
+        </a>
+        
+        <a href="{% url 'role_permission' %}" class="submenu-card">
+            <div class="submenu-card-icon green">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h4>Role Permission</h4>
+            <p>Configure role permissions</p>
+        </a>
+        
+        <a href="{% url 'page' %}" class="submenu-card">
+            <div class="submenu-card-icon purple">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h4>Add Pages</h4>
+            <p>Manage application pages</p>
+        </a>
+    </div>
 </div>
 
 <!-- Settings Grid -->
