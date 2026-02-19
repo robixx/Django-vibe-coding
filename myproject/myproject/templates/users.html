@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+
+{% block title %}Users - TailAdmin{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Pagination Styles */
+    .pagination-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 24px;
+        background: white;
+        border-top: 1px solid #E5E7EB;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    
+    .pagination-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: #6B7280;
+        font-size: 11px;
+    }
+    
+    .pagination-info select {
+        padding: 5px 15px;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        font-size: 12px;
+        outline: none;
+        cursor: pointer;
+        background: white;
+        color: #1F2937;
+        transition: all 0.2s;
+    }
+    
+    .pagination-info select:hover {
+        border-color: #3B82F6;
+    }
+    
+    .pagination-stats {
+        font-size: 11px;
+        color: #6B7280;
+    }
+    
+    .pagination-stats strong {
+        color: #1F2937;
+    }
+    
+    /* Pagination Buttons */
+    .pagination-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .pagination-btn {
+        min-width: 25px;
+        height: 25px;
+        padding: 0 12px;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        background: white;
+        color: #6B7280;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+    }
+    
+    .pagination-btn:hover:not(.disabled):not(.active) {
+        border-color: #3B82F6;
+        color: #3B82F6;
+    }
+    
+    .pagination-btn.active {
+        background: #3B82F6;
+        border-color: #3B82F6;
+        color: white;
+        font-weight: 600;
+    }
+    
+    .pagination-btn.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+    
+    /* Jump to page */
+    .jump-to-page {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 16px;
+        padding-left: 16px;
+        border-left: 1px solid #E5E7EB;
+    }
+    
+    .jump-to-page input {
+        width: 60px;
+        padding: 8px 10px;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        font-size: 13px;
+        text-align: center;
+        outline: none;
+    }
+    
+    .jump-to-page input:focus {
+        border-color: #3B82F6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .jump-to-page button {
+        padding: 8px 14px;
+        background: #3B82F6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .jump-to-page button:hover {
+        background: #2563EB;
+    }
+    
+    /* Filter Pills */
+    .filter-pill {
+        padding: 4px 10px;
+        border-radius: 3px;
+        font-size: 11px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+        background: #F3F4F6;
+        color: #6B7280;
+    }
+    
+    .filter-pill:hover {
+        background: #E5E7EB;
+        color: #1F2937;
+    }
+    
+    .filter-pill.active {
+        background: #3B82F6;
+        color: white;
+    }
+    
+    /* Table Search */
+    .table-search {
+        position: relative;
+    }
+    
+    .table-search input {
+        width: 180px;
+        padding: 6px 12px 6px 30px;
+        border: 1px solid #E5E7EB;
+        border-radius: 6px;
+        font-size: 12px;
+        background: #F9FAFB;
+        color: #1F2937;
+        transition: all 0.2s;
+    }
+    
+    .table-search input:focus {
+        outline: none;
+        border-color: #3B82F6;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .table-search i {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        font-size: 12px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .pagination-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .pagination-info {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .pagination-wrapper {
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .jump-to-page {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-user"></i> Users</h1>
+    <p>Manage all user accounts and permissions</p>
+</div>
+
+<!-- Filter Bar -->
+<div class="content-card mb-6">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; padding: 5px 24px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <span class="filter-pill active">All ({{ users.paginator.count }})</span>
+            <span class="filter-pill">Active</span>
+            <span class="filter-pill">Inactive</span>
+            <span class="filter-pill">Admin</span>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary">
+                <i class="fas fa-filter"></i> Filter
+            </button>
+            <button class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Add User
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="content-card">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-users"></i>
+            User List
+        </div>
+        <div class="card-actions">
+            <div class="table-search">
+                <input type="text" id="tableSearch" placeholder="Search..." onkeyup="searchTable()">
+                <i class="fas fa-search"></i>
+            </div>
+            <span style="background: #F3F4F6; padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #6B7280;">
+                {{ users.paginator.count }} users
+            </span>
+        </div>
+    </div>
+    <div class="card-body" style="padding: 0;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>
+                        <span style="font-weight: 600; color: #9CA3AF;">#{{ user.id }}</span>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 25px; height: 25px; border-radius: 5px; background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 12px;">
+                                {{ user.username|upper|slice:":1" }}
+                            </div>
+                            <span style="font-weight: 600; color: #1F2937;">{{ user.username }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px; color: #6B7280;">
+                            <i class="fas fa-envelope" style="font-size: 14px;"></i>
+                            {{ user.email }}
+                        </div>
+                    </td>
+                    <td>
+                        {% if user.isactive == 1 %}
+                        <span class="status-badge success">
+                            <i class="fas fa-check-circle"></i> Active
+                        </span>
+                        {% else %}
+                        <span class="status-badge danger">
+                            <i class="fas fa-times-circle"></i> Inactive
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">
+                        <div class="empty-state">
+                            <i class="fas fa-user"></i>
+                            <h3>No users found</h3>
+                            <p>Create your first user to get started</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if users.paginator.num_pages > 1 %}
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span class="pagination-stats">
+                Showing <strong>{{ users.start_index }}</strong> to <strong>{{ users.end_index }}</strong> of <strong>{{ users.paginator.count }}</strong> entries
+            </span>
+            
+            <div style="display: flex; align-items: center; gap: 8px; margin-left: 20px;">
+                <label for="per_page" style="font-size: 13px; color: #6B7280;">Show:</label>
+                <select id="per_page" onchange="changePerPage(this.value)">
+                    <option value="10" {% if items_per_page == 10 %}selected{% endif %}>10</option>
+                    <option value="25" {% if items_per_page == 25 %}selected{% endif %}>25</option>
+                    <option value="50" {% if items_per_page == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if items_per_page == 100 %}selected{% endif %}>100</option>
+                </select>
+            </div>
+            
+            <div class="jump-to-page">
+                <span style="font-size: 13px; color: #6B7280;">Go to:</span>
+                <input type="number" id="jump_page" min="1" max="{{ users.paginator.num_pages }}">
+                <button onclick="jumpToPage()">Go</button>
+            </div>
+        </div>
+        
+        <div class="pagination-wrapper">
+            <!-- First Page -->
+            {% if users.has_previous %}
+            <a href="?page=1&per_page={{ items_per_page }}" class="pagination-btn" title="First Page">
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+            {% else %}
+            <span class="pagination-btn disabled" title="First Page">
+                <i class="fas fa-angle-double-left"></i>
+            </span>
+            {% endif %}
+            
+            <!-- Previous Page -->
+            {% if users.has_previous %}
+            <a href="?page={{ users.previous_page_number }}&per_page={{ items_per_page }}" class="pagination-btn" title="Previous Page">
+                <i class="fas fa-angle-left"></i>
+            </a>
+            {% else %}
+            <span class="pagination-btn disabled" title="Previous Page">
+                <i class="fas fa-angle-left"></i>
+            </span>
+            {% endif %}
+            
+            <!-- Page Numbers -->
+            {% for num in page_range %}
+                {% if num == users.number %}
+                <span class="pagination-btn active">{{ num }}</span>
+                {% elif num > 0 %}
+                <a href="?page={{ num }}&per_page={{ items_per_page }}" class="pagination-btn">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+            
+            <!-- Next Page -->
+            {% if users.has_next %}
+            <a href="?page={{ users.next_page_number }}&per_page={{ items_per_page }}" class="pagination-btn" title="Next Page">
+                <i class="fas fa-angle-right"></i>
+            </a>
+            {% else %}
+            <span class="pagination-btn disabled" title="Next Page">
+                <i class="fas fa-angle-right"></i>
+            </span>
+            {% endif %}
+            
+            <!-- Last Page -->
+            {% if users.has_next %}
+            <a href="?page={{ users.paginator.num_pages }}&per_page={{ items_per_page }}" class="pagination-btn" title="Last Page">
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+            {% else %}
+            <span class="pagination-btn disabled" title="Last Page">
+                <i class="fas fa-angle-double-right"></i>
+            </span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function searchTable() {
+        // Get input value
+        const input = document.getElementById('tableSearch');
+        const filter = input.value.toLowerCase();
+        
+        // Get table and rows
+        const table = document.querySelector('.data-table');
+        const tbody = table.querySelector('tbody');
+        const rows = tbody.querySelectorAll('tr');
+        
+        // Loop through all table rows
+        rows.forEach(row => {
+            // Get all cells in the row
+            const cells = row.querySelectorAll('td');
+            let found = false;
+            
+            // Search in each cell
+            cells.forEach(cell => {
+                const text = cell.textContent || cell.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    found = true;
+                }
+            });
+            
+            // Show/hide row
+            if (found) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    
+    function changePerPage(value) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('per_page', value);
+        url.searchParams.set('page', 1);
+        window.location.href = url.toString();
+    }
+    
+    function jumpToPage() {
+        const page = document.getElementById('jump_page').value;
+        const maxPage = {{ users.paginator.num_pages }};
+        
+        if (page && page >= 1 && page <= maxPage) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.location.href = url.toString();
+        } else {
+            alert('Please enter a valid page number (1-' + maxPage + ')');
+        }
+    }
+    
+    document.getElementById('jump_page').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            jumpToPage();
+        }
+    });
+</script>
+{% endblock %}

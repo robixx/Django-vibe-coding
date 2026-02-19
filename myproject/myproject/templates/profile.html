@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - TailAdmin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+        border-radius: 16px;
+        padding: 32px;
+        color: white;
+        margin-bottom: 24px;
+    }
+    
+    .profile-header h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+    
+    .profile-header p {
+        font-size: 14px;
+        opacity: 0.9;
+    }
+    
+    .profile-avatar-large {
+        width: 80px;
+        height: 80px;
+        border-radius: 16px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+        color: #3B82F6;
+        margin-bottom: 16px;
+    }
+    
+    .profile-section-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1F2937;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .profile-section-title i {
+        color: #3B82F6;
+    }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-size: 14px;
+        color: #6B7280;
+        font-weight: 500;
+    }
+    
+    .info-value {
+        font-size: 14px;
+        color: #1F2937;
+        font-weight: 600;
+    }
+    
+    .info-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-details-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<div class="profile-header">
+    <div class="profile-avatar-large">
+        {{ username|upper|slice:":1" }}
+    </div>
+    <h1>{{ username }}</h1>
+    <p>Admin User</p>
+</div>
+
+<!-- Profile Content Grid -->
+<div class="profile-details-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+    <!-- Account Details -->
+    <div class="content-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-user-circle"></i>
+                Account Details
+            </div>
+        </div>
+        <div class="card-body">
+            {% if current_user %}
+            <div class="info-item">
+                <span class="info-label">User ID</span>
+                <span class="info-value">#{{ current_user.id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Username</span>
+                <span class="info-value">{{ current_user.username }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Email</span>
+                <span class="info-value">{{ current_user.email|default:"Not provided" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Status</span>
+                <span class="info-badge" style="background: #D1FAE5; color: #059669;">
+                    <i class="fas fa-check"></i> Active
+                </span>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user"></i>
+                <h3>No profile data</h3>
+                <p>Profile information not available</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Security Settings -->
+    <div class="content-card">
+        <div class="card-header">
+            <div class="card-title">
+                <i class="fas fa-shield-alt"></i>
+                Security
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="info-item">
+                <span class="info-label">Password</span>
+                <span class="info-value">••••••••</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Two-Factor Auth</span>
+                <span class="info-badge" style="background: #FEE2E2; color: #DC2626;">
+                    <i class="fas fa-times"></i> Not Enabled
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Session</span>
+                <span class="info-badge" style="background: #D1FAE5; color: #059669;">
+                    <i class="fas fa-check"></i> Active
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Last Login</span>
+                <span class="info-value">Today</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="content-card mt-6">
+    <div class="card-header">
+        <div class="card-title">
+            <i class="fas fa-bolt"></i>
+            Quick Actions
+        </div>
+    </div>
+    <div class="card-body">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Profile
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-cog"></i> Account Settings
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-key"></i> Change Password
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-question-circle"></i> Support
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

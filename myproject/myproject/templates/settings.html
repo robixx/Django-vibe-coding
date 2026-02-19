@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - TailAdmin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    
+    .settings-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .settings-card-header h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1F2937;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .settings-card-header h3 i {
+        color: #3B82F6;
+    }
+    
+    .settings-card-body {
+        padding: 24px;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 0;
+        border-bottom: 1px solid #E5E7EB;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-size: 14px;
+        color: #6B7280;
+        font-weight: 500;
+    }
+    
+    .info-value {
+        font-size: 14px;
+        color: #1F2937;
+        font-weight: 600;
+    }
+    
+    .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+    
+    .status-connected {
+        background: #D1FAE5;
+        color: #059669;
+    }
+    
+    .status-disconnected {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+    
+    @media (max-width: 768px) {
+        .settings-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <h1><i class="fas fa-cog"></i> Settings</h1>
+    <p>Manage your application settings and preferences</p>
+</div>
+
+<!-- Settings Grid -->
+<div class="settings-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+    <!-- System Information -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h3><i class="fas fa-server"></i> System Information</h3>
+        </div>
+        <div class="settings-card-body">
+            <div class="info-row">
+                <span class="info-label">Django Version</span>
+                <span class="info-value">5.2.11</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Python Version</span>
+                <span class="info-value">3.13</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Server</span>
+                <span class="info-value">Development</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Template Engine</span>
+                <span class="info-value">Django Templates</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Database Connection -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h3><i class="fas fa-database"></i> Database Connection</h3>
+        </div>
+        <div class="settings-card-body">
+            <div class="info-row">
+                <span class="info-label">Status</span>
+                <span class="status-indicator status-connected">
+                    <i class="fas fa-check-circle"></i> Connected
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Database</span>
+                <span class="info-value">Execel_BD</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Host</span>
+                <span class="info-value">Robi-Laptop</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Driver</span>
+                <span class="info-value">mssql-django</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Application Info -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h3><i class="fas fa-info-circle"></i> Application Info</h3>
+        </div>
+        <div class="settings-card-body">
+            <div class="info-row">
+                <span class="info-label">Application Name</span>
+                <span class="info-value">Employee Management</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Version</span>
+                <span class="info-value">1.0.0</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Total Employees</span>
+                <span class="info-value">{{ employees|length }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Total Users</span>
+                <span class="info-value">{{ users|length }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+        </div>
+        <div class="settings-card-body">
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <a href="{% url 'profile' %}" class="btn btn-secondary" style="justify-content: flex-start;">
+                    <i class="fas fa-id-card"></i> Edit Profile
+                </a>
+                <button class="btn btn-secondary" style="justify-content: flex-start;">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+                <button class="btn btn-secondary" style="justify-content: flex-start;">
+                    <i class="fas fa-sync"></i> Clear Cache
+                </button>
+                <button class="btn btn-secondary" style="justify-content: flex-start;">
+                    <i class="fas fa-bell"></i> Notification Settings
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
