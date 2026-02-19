@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import models
 from core.models import Employeedetails, User
 
 
@@ -201,9 +202,18 @@ def role_view(request):
     all_employees = Employeedetails.objects.all()
     users = User.objects.filter(isactive=1)
     
-    # Get all roles with pagination
+    # Get search query
+    search_query = request.GET.get('search', '')
+    
+    # Get all roles with search filter
     from core.models import Role
-    roles_list = Role.objects.all().order_by('-id')
+    if search_query:
+        roles_list = Role.objects.filter(
+            models.Q(role_name__icontains=search_query) | 
+            models.Q(role_description__icontains=search_query)
+        ).order_by('-id')
+    else:
+        roles_list = Role.objects.all().order_by('-id')
     
     items_per_page = request.GET.get('per_page', 10)
     try:
@@ -242,6 +252,7 @@ def role_view(request):
         'page_range': page_range,
         'total_pages': total_pages,
         'items_per_page': items_per_page,
+        'search_query': search_query,
     }
     return render(request, 'role.html', context)
 
@@ -390,7 +401,18 @@ def page_view(request):
     all_employees = Employeedetails.objects.all()
     users = User.objects.filter(isactive=1)
     
-    pages_list = Page.objects.all().order_by('-id')
+    # Get search query
+    search_query = request.GET.get('search', '')
+    
+    # Get all pages with search filter
+    if search_query:
+        pages_list = Page.objects.filter(
+            models.Q(page_name__icontains=search_query) | 
+            models.Q(page_url__icontains=search_query) |
+            models.Q(page_icon__icontains=search_query)
+        ).order_by('-id')
+    else:
+        pages_list = Page.objects.all().order_by('-id')
     
     items_per_page = request.GET.get('per_page', 10)
     try:
@@ -429,6 +451,7 @@ def page_view(request):
         'page_range': page_range,
         'total_pages': total_pages,
         'items_per_page': items_per_page,
+        'search_query': search_query,
     }
     return render(request, 'page.html', context)
 

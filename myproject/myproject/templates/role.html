@@ -52,6 +52,15 @@
             <i class="fas fa-list"></i> All Roles
         </div>
         <div class="card-actions">
+            <form method="GET" action="{% url 'role' %}" style="display: flex; gap: 8px;">
+                <div class="table-search">
+                    <input type="text" name="search" id="tableSearch" placeholder="Search..." value="{{ search_query }}">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
             <a href="{% url 'role_add' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add Role
             </a>
@@ -109,20 +118,20 @@
         </div>
         <div class="pagination-buttons">
             {% if roles.has_previous %}
-            <a href="?page=1" class="page-btn"><i class="fas fa-angle-double-left"></i></a>
-            <a href="?page={{ roles.previous_page_number }}" class="page-btn"><i class="fas fa-angle-left"></i></a>
+            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-double-left"></i></a>
+            <a href="?page={{ roles.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-left"></i></a>
             {% else %}
             <span class="page-btn disabled"><i class="fas fa-angle-double-left"></i></span>
             <span class="page-btn disabled"><i class="fas fa-angle-left"></i></span>
             {% endif %}
             
             {% for num in page_range %}
-            <a href="?page={{ num }}" class="page-btn {% if num == roles.number %}active{% endif %}">{{ num }}</a>
+            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn {% if num == roles.number %}active{% endif %}">{{ num }}</a>
             {% endfor %}
             
             {% if roles.has_next %}
-            <a href="?page={{ roles.next_page_number }}" class="page-btn"><i class="fas fa-angle-right"></i></a>
-            <a href="?page={{ roles.paginator.num_pages }}" class="page-btn"><i class="fas fa-angle-double-right"></i></a>
+            <a href="?page={{ roles.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-right"></i></a>
+            <a href="?page={{ roles.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-double-right"></i></a>
             {% else %}
             <span class="page-btn disabled"><i class="fas fa-angle-right"></i></span>
             <span class="page-btn disabled"><i class="fas fa-angle-double-right"></i></span>

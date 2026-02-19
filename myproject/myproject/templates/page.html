@@ -52,6 +52,15 @@
             <i class="fas fa-list"></i> All Pages
         </div>
         <div class="card-actions">
+            <form method="GET" action="{% url 'page' %}" style="display: flex; gap: 8px;">
+                <div class="table-search">
+                    <input type="text" name="search" id="tableSearch" placeholder="Search..." value="{{ search_query }}">
+                    <i class="fas fa-search"></i>
+                </div>
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
             <a href="{% url 'page_add' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add Page
             </a>
@@ -111,20 +120,20 @@
         </div>
         <div class="pagination-buttons">
             {% if pages.has_previous %}
-            <a href="?page=1" class="page-btn"><i class="fas fa-angle-double-left"></i></a>
-            <a href="?page={{ pages.previous_page_number }}" class="page-btn"><i class="fas fa-angle-left"></i></a>
+            <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-double-left"></i></a>
+            <a href="?page={{ pages.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-left"></i></a>
             {% else %}
             <span class="page-btn disabled"><i class="fas fa-angle-double-left"></i></span>
             <span class="page-btn disabled"><i class="fas fa-angle-left"></i></span>
             {% endif %}
             
             {% for num in page_range %}
-            <a href="?page={{ num }}" class="page-btn {% if num == pages.number %}active{% endif %}">{{ num }}</a>
+            <a href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn {% if num == pages.number %}active{% endif %}">{{ num }}</a>
             {% endfor %}
             
             {% if pages.has_next %}
-            <a href="?page={{ pages.next_page_number }}" class="page-btn"><i class="fas fa-angle-right"></i></a>
-            <a href="?page={{ pages.paginator.num_pages }}" class="page-btn"><i class="fas fa-angle-double-right"></i></a>
+            <a href="?page={{ pages.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-right"></i></a>
+            <a href="?page={{ pages.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-btn"><i class="fas fa-angle-double-right"></i></a>
             {% else %}
             <span class="page-btn disabled"><i class="fas fa-angle-right"></i></span>
             <span class="page-btn disabled"><i class="fas fa-angle-double-right"></i></span>
